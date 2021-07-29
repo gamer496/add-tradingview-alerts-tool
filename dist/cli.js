@@ -8,6 +8,7 @@ import { initBaseDelay, atatVersion } from "./service/common-service.js";
 import kleur from "kleur";
 import updateNotifier from "./update-notifier.js";
 import { exchangesAvailable } from "./service/exchange-service.js";
+import pullAlertsMain from './pull-alerts.js';
 const program = new Command();
 program
     .version(atatVersion)
@@ -51,6 +52,20 @@ program.command('fetch-pairs <exchange> [quote]')
     initialize();
     try {
         await fetchPairsMain(exchange, quote || "all");
+    }
+    catch (e) {
+        log.error(e);
+        await checkForUpdate(false);
+        process.exit(1);
+    }
+    await checkForUpdate(false);
+});
+program.command('pull-alerts')
+    .description('pull alerts')
+    .action(async () => {
+    initialize();
+    try {
+        await pullAlertsMain();
     }
     catch (e) {
         log.error(e);

@@ -3,6 +3,7 @@ import log from "./log.js";
 import kleur from "kleur";
 import { NoInputFoundError } from "../classes.js";
 import RegexParser from "regex-parser";
+import fetch from 'node-fetch';
 // data-dialog-name="gopro"
 const screenshot = isEnvEnabled(process.env.SCREENSHOT);
 export const fetchFirstXPath = async (page, selector, timeout = 20000) => {
@@ -299,5 +300,20 @@ export const addAlert = async (page, singleAlertSettings) => {
     await clickSubmit(page);
     await waitForTimeout(2);
     await clickContinueIfWarning(page);
+};
+export const getAlerts = async (page) => {
+    log.info("get alerts");
+    page.cookies().then((cookies) => {
+        log.info("correct cookie: " + cookies.map((x) => x["name"] + "=" + x["value"]).join(";"));
+        fetch("https://alerts.tradingview.com/alerts/?log_username=singhjasdeep496", { method: 'POST',
+            body: JSON.stringify({ "m": "list_events", "p": { "limit": 50, "inc_cross_int": true } }),
+            headers: { "origin": "https://www.tradingview.com", "cookie": cookies.map((x) => x["name"] + "=" + x["value"]).join(";") }
+        }).then((res) => {
+            res.json().then((data) => {
+                console.log(JSON.stringify(data["p"], null, 4));
+            });
+        });
+    });
+    await waitForTimeout(2);
 };
 //# sourceMappingURL=tv-page-actions.js.map

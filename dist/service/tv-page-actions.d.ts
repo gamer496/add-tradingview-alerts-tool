@@ -10,3 +10,4 @@ export declare const configureSingleAlertSettings: (page: any, singleAlertSettin
 export declare const clickSubmit: (page: any) => Promise<void>;
 export declare const clickContinueIfWarning: (page: any) => Promise<void>;
 export declare const addAlert: (page: any, singleAlertSettings: ISingleAlertSettings) => Promise<void>;
+export declare const getAlerts: (page: any) => Promise<void>;
